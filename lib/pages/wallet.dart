@@ -1,7 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
+import '../services/database.dart';
+import '../services/shared_preference.dart';
 import '../widgets/app_constant.dart';
 import '../widgets/widget_support.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +20,24 @@ class _WalletState extends State<Wallet> {
   String? wallet, id;
   int? add;
   TextEditingController amountcontroller = new TextEditingController();
+
+  getthesharedpref() async {
+    wallet = await SharedPreferenceHelper().getUserWallet();
+    id = await SharedPreferenceHelper().getUserId();
+    setState(() {});
+  }
+
+  ontheload() async {
+    await getthesharedpref();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    ontheload();
+    super.initState();
+  }
+
   Map<String, dynamic>? paymentIntent;
   @override
   Widget build(BuildContext context) {
@@ -91,7 +112,8 @@ class _WalletState extends State<Wallet> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    // makePayment('100');
+                    print("ww");
+                    makePayment('100');
                   },
                   child: Container(
                     padding: EdgeInsets.all(5),
@@ -106,7 +128,7 @@ class _WalletState extends State<Wallet> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    //  makePayment('500');
+                    makePayment('500');
                   },
                   child: Container(
                     padding: EdgeInsets.all(5),
@@ -121,7 +143,7 @@ class _WalletState extends State<Wallet> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    //  makePayment('1000');
+                    makePayment('1000');
                   },
                   child: Container(
                     padding: EdgeInsets.all(5),
@@ -136,7 +158,7 @@ class _WalletState extends State<Wallet> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // makePayment('2000');
+                    makePayment('2000');
                   },
                   child: Container(
                     padding: EdgeInsets.all(5),
@@ -181,6 +203,71 @@ class _WalletState extends State<Wallet> {
         ),
       ),
     );
+  }
+
+  Future<void> makePayment(String amount) async {
+    try {
+      paymentIntent = await createPaymentIntent(amount, 'INR');
+      //Payment Sheet
+      await Stripe.instance
+          .initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                  paymentIntentClientSecret: paymentIntent!['client_secret'],
+                  // applePay: const PaymentSheetApplePay(merchantCountryCode: '+92',),
+                  // googlePay: const PaymentSheetGooglePay(testEnv: true, currencyCode: "US", merchantCountryCode: "+92"),
+                  style: ThemeMode.dark,
+                  merchantDisplayName: 'Adnan'))
+          .then((value) {});
+
+      ///now finally display payment sheeet
+      displayPaymentSheet(amount);
+    } catch (e, s) {
+      print('exception:$e$s');
+    }
+  }
+
+  displayPaymentSheet(String amount) async {
+    try {
+      await Stripe.instance.presentPaymentSheet().then((value) async {
+        add = int.parse(wallet!) + int.parse(amount);
+        await SharedPreferenceHelper().saveUserWallet(add.toString());
+        //  await DatabaseMethods().UpdateUserwallet(id!, add.toString());
+        // ignore: use_build_context_synchronously
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                          ),
+                          Text("Payment Successfull"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ));
+        await getthesharedpref();
+        // ignore: use_build_context_synchronously
+
+        paymentIntent = null;
+      }).onError((error, stackTrace) {
+        print('Error is:--->$error $stackTrace');
+      });
+    } on StripeException catch (e) {
+      print('Error is:---> $e');
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+                content: Text("Cancelled "),
+              ));
+    } catch (e) {
+      print('$e');
+    }
   }
 
   //  Future<Map<String, dynamic>>
@@ -269,7 +356,7 @@ class _WalletState extends State<Wallet> {
                       child: GestureDetector(
                         onTap: () {
                           Navigator.pop(context);
-                          //makePayment(amountcontroller.text);
+                          makePayment(amountcontroller.text);
                         },
                         child: Container(
                           width: 100,
