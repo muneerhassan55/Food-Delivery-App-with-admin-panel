@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/services/database.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/widget_support.dart';
@@ -15,6 +17,152 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool icecream = false, pizza = false, burger = false, salad = false;
+  Stream? foodItemStream;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Widget allItems() {
+    return FutureBuilder(
+        future: DatabaseMethods().getFoodItem('Burger'),
+        builder: (ctx, snapshotData) {
+          if (snapshotData.hasError) {
+            return Center(child: Text('Error: ${snapshotData.error}'));
+          }
+
+          if (!snapshotData.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return StreamBuilder(
+              stream: snapshotData.data,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: snapshot.data.docs.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot ds = snapshot.data.docs[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Details()));
+                      },
+                      child: Container(
+                        margin: EdgeInsets.all(4),
+                        child: Material(
+                          borderRadius: BorderRadius.circular(20),
+                          elevation: 5,
+                          child: Container(
+                            padding: EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image.network(
+                                  ds['Image'],
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                ),
+                                Text(
+                                  ds['Name'],
+                                  style: AppWidget.semiBoldTextFieldStyle(),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  ds['Detail'],
+                                  style: AppWidget.LightTextFieldStyle(),
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  '\$' + ds['Price'],
+                                  style: AppWidget.semiBoldTextFieldStyle(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              });
+        });
+  }
+
+  // Widget allItems() {
+  //   return StreamBuilder(
+  //       stream: foodItemStream,
+  //       builder: (context, AsyncSnapshot snapshot) {
+  //         print(snapshot.data);
+  //         return snapshot.hasData
+  //             ? ListView.builder(
+  //                 padding: EdgeInsets.zero,
+  //                 itemCount: snapshot.data.docs.length,
+  //                 shrinkWrap: true,
+  //                 scrollDirection: Axis.horizontal,
+  //                 itemBuilder: (context, index) {
+  //                   DocumentSnapshot ds = snapshot.data.docs[index];
+  //                   return GestureDetector(
+  //                     onTap: () {
+  //                       Navigator.push(context,
+  //                           MaterialPageRoute(builder: (context) => Details()));
+  //                     },
+  //                     child: Container(
+  //                       margin: EdgeInsets.all(4),
+  //                       child: Material(
+  //                         borderRadius: BorderRadius.circular(20),
+  //                         elevation: 5,
+  //                         child: Container(
+  //                           padding: EdgeInsets.all(14),
+  //                           child: Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Image.network(
+  //                                 ds['Image'],
+  //                                 height: 150,
+  //                                 width: 150,
+  //                                 fit: BoxFit.cover,
+  //                               ),
+  //                               Text(
+  //                                 ds['Name'],
+  //                                 style: AppWidget.semiBoldTextFieldStyle(),
+  //                               ),
+  //                               SizedBox(
+  //                                 height: 5,
+  //                               ),
+  //                               Text(
+  //                                 ds['Detail'],
+  //                                 style: AppWidget.LightTextFieldStyle(),
+  //                               ),
+  //                               SizedBox(
+  //                                 height: 5,
+  //                               ),
+  //                               Text(
+  //                                 '\$' + ds['Price'],
+  //                                 style: AppWidget.semiBoldTextFieldStyle(),
+  //                               )
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   );
+  //                 })
+  //             : Center(child: CircularProgressIndicator());
+  //       });
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,100 +210,7 @@ class _HomeState extends State<Home> {
               SizedBox(
                 height: 20,
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Details()));
-                      },
-                      child: Container(
-                        margin: EdgeInsets.all(4),
-                        child: Material(
-                          borderRadius: BorderRadius.circular(20),
-                          elevation: 5,
-                          child: Container(
-                            padding: EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'images/salad2.png',
-                                  height: 150,
-                                  width: 150,
-                                  fit: BoxFit.cover,
-                                ),
-                                Text(
-                                  'Vegi Taco Hash',
-                                  style: AppWidget.semiBoldTextFieldStyle(),
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  'Fresh and Healthy',
-                                  style: AppWidget.LightTextFieldStyle(),
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  '\$25',
-                                  style: AppWidget.semiBoldTextFieldStyle(),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(4),
-                      child: Material(
-                        borderRadius: BorderRadius.circular(20),
-                        elevation: 5,
-                        child: Container(
-                          padding: EdgeInsets.all(14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'images/salad2.png',
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.cover,
-                              ),
-                              Text(
-                                'Mix Veg Salad',
-                                style: AppWidget.semiBoldTextFieldStyle(),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Spicy with Onion',
-                                style: AppWidget.LightTextFieldStyle(),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                '\$28',
-                                style: AppWidget.semiBoldTextFieldStyle(),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              Container(height: 270, child: allItems()),
               SizedBox(
                 height: 30,
               ),

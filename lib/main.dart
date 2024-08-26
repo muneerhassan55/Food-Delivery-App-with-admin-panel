@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:food_delivery_app/admin/add_food.dart';
+import 'package:food_delivery_app/admin/admin_login.dart';
+import 'package:food_delivery_app/pages/home.dart';
 import 'pages/onboard.dart';
 import 'firebase_options.dart';
 import 'widgets/app_constant.dart';
@@ -28,6 +31,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: Onboard());
+        home: Home());
   }
 }

@@ -44,6 +44,8 @@ dependencies:
   http: ^1.2.2
   random_string: ^2.3.1
   shared_preferences: ^2.3.2
+  image_picker: ^1.1.2
+  firebase_storage: ^11.6.0
 
 dev_dependencies:
   flutter_test:
