@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:food_delivery_app/admin/add_food.dart';
 import 'package:food_delivery_app/admin/admin_login.dart';
+import 'package:food_delivery_app/admin/home_admin.dart';
 import 'package:food_delivery_app/pages/home.dart';
 import 'pages/onboard.dart';
 import 'firebase_options.dart';
