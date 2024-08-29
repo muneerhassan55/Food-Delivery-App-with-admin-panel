@@ -15,9 +15,7 @@ class DatabaseMethods {
           .collection('users')
           .doc(id)
           .set(userInfoMap);
-      AlertDialog(
-        title: Text('User added successfully'),
-      );
+
       print("User added successfully");
     } catch (e) {
       print("Failed to add user: $e");
@@ -43,5 +41,27 @@ class DatabaseMethods {
 
   Future<Stream<QuerySnapshot>> getFoodItem(String name) async {
     return FirebaseFirestore.instance.collection(name).snapshots();
+  }
+
+  Future addFoodToCart(Map<String, dynamic> userInfoMap, String id) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(id)
+          .collection('Cart')
+          .add(userInfoMap);
+
+      print("added to cart successfully");
+    } catch (e) {
+      print("Failed to add to cad: $e");
+    }
+  }
+
+  Future<Stream<QuerySnapshot>> getFoodCart(String id) async {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .collection('Cart')
+        .snapshots();
   }
 }

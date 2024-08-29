@@ -1,15 +1,14 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:http/http.dart' as http;
 
 import '../services/database.dart';
 import '../services/shared_preference.dart';
 import '../widgets/app_constant.dart';
 import '../widgets/widget_support.dart';
-import 'package:http/http.dart' as http;
 
 class Wallet extends StatefulWidget {
   const Wallet({super.key});
@@ -41,11 +40,12 @@ class _WalletState extends State<Wallet> {
   }
 
   Map<String, dynamic>? paymentIntent;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: wallet == null
-          ? Center(child: CircularProgressIndicator())
+          ? CircularProgressIndicator()
           : Container(
               margin: EdgeInsets.only(top: 60.0),
               child: Column(
@@ -91,7 +91,6 @@ class _WalletState extends State<Wallet> {
                             ),
                             Text(
                               "\$" + wallet!,
-                              //"\$" + "100"!,
                               style: AppWidget.boldTextFieldStyle(),
                             )
                           ],
@@ -211,7 +210,7 @@ class _WalletState extends State<Wallet> {
 
   Future<void> makePayment(String amount) async {
     try {
-      paymentIntent = await createPaymentIntent(amount, 'PKR');
+      paymentIntent = await createPaymentIntent(amount, 'INR');
       //Payment Sheet
       await Stripe.instance
           .initPaymentSheet(
@@ -220,7 +219,7 @@ class _WalletState extends State<Wallet> {
                   // applePay: const PaymentSheetApplePay(merchantCountryCode: '+92',),
                   // googlePay: const PaymentSheetGooglePay(testEnv: true, currencyCode: "US", merchantCountryCode: "+92"),
                   style: ThemeMode.dark,
-                  merchantDisplayName: 'Muneer'))
+                  merchantDisplayName: 'Adnan'))
           .then((value) {});
 
       ///now finally display payment sheeet
