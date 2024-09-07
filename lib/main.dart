@@ -5,6 +5,7 @@ import 'package:food_delivery_app/admin/add_food.dart';
 import 'package:food_delivery_app/admin/admin_login.dart';
 import 'package:food_delivery_app/admin/home_admin.dart';
 import 'package:food_delivery_app/pages/home.dart';
+import 'package:food_delivery_app/pages/login.dart';
 import 'pages/bottom_navigation_bar.dart';
 import 'pages/onboard.dart';
 import 'firebase_options.dart';
@@ -33,6 +34,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: BottomNav());
+        home: AdminLogin());
   }
 }
