@@ -41,8 +41,13 @@ lib/
 
 1. Install Flutter (3.x) and run `flutter pub get`.
 2. Run `flutterfire configure` to connect your own Firebase project.
-3. Add your own Stripe **test** keys in `lib/widgets/app_constant.dart`.
-4. Run `flutter run`.
+3. Run with your own Stripe **test** keys (they are read at build time, nothing is stored in the repo):
+
+```bash
+flutter run \
+  --dart-define=STRIPE_PUBLISHABLE_KEY=pk_test_... \
+  --dart-define=STRIPE_SECRET_KEY=sk_test_...
+```
 
 > **Note:** this is a demo project. In production the Stripe PaymentIntent must be created on a backend (for example a Cloud Function), and the secret key must never be shipped inside the app.
 

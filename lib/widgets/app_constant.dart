@@ -1,4 +1,4 @@
-String publishableKey =
-    "pk_test_51PpOqFCGa8PaqKEU8vWdohktLERqZR9SbdmPl8LLNnlJr7vcCTOhNxdpDAgGTih2zy4jjwK745cxBz5SX6wys3tP00NQpWFTHl";
-String secretKey =
-    "sk_test_51PpOqFCGa8PaqKEUD70x7BExKCzBCVMr1X76fia7phXX18tIfcF6a5xhhheBXAdIeCs4UEHq9It0KOi1TVx4AuJ300ssw9X4BD";
+// Stripe keys are passed at build time, never committed:
+// flutter run --dart-define=STRIPE_PUBLISHABLE_KEY=pk_test_... --dart-define=STRIPE_SECRET_KEY=sk_test_...
+const String publishableKey = String.fromEnvironment('STRIPE_PUBLISHABLE_KEY');
+const String secretKey = String.fromEnvironment('STRIPE_SECRET_KEY');
