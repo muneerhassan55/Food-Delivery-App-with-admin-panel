@@ -45,3 +45,7 @@ lib/
 4. Run `flutter run`.
 
 > **Note:** this is a demo project. In production the Stripe PaymentIntent must be created on a backend (for example a Cloud Function), and the secret key must never be shipped inside the app.
+
+## License
+
+Released under the [MIT License](LICENSE).
