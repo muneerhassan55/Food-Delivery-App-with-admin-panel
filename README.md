@@ -1,16 +1,47 @@
-# food_delivery_app
+# Food Delivery App with Admin Panel
 
-A new Flutter project.
+A Flutter food ordering app with a built-in admin panel. Customers browse food by category, add items to their cart and pay from an in-app wallet topped up with Stripe. Admins log in to add new food items with images.
 
-## Getting Started
+<p>
+  <img src="images/screen1.png" width="220" alt="Onboarding">
+  <img src="images/screen2.png" width="220" alt="Home">
+  <img src="images/screen3.png" width="220" alt="Details">
+</p>
 
-This project is a starting point for a Flutter application.
+Screen recordings are in the [`videos/`](videos) folder.
 
-A few resources to get you started if this is your first Flutter project:
+## Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+**Customer app**
+- Onboarding, sign up, login and password reset with Firebase Auth
+- Home with food categories (pizza, burger, salad, ice cream) and item details
+- Cart and order screen
+- Wallet top-up with the Stripe Payment Sheet
+- Profile with photo upload to Firebase Storage
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**Admin panel**
+- Separate admin login
+- Add food items with name, price, details, category and image
+
+## Tech stack
+
+Flutter · Dart · Firebase Auth · Cloud Firestore · Firebase Storage · Stripe (flutter_stripe) · Shared Preferences · curved_navigation_bar
+
+## Project structure
+
+```
+lib/
+  admin/      admin login, admin home, add food
+  pages/      onboarding, auth, home, details, order, wallet, profile
+  services/   auth, Firestore database and shared preferences helpers
+  widgets/    shared widgets and constants
+```
+
+## Getting started
+
+1. Install Flutter (3.x) and run `flutter pub get`.
+2. Run `flutterfire configure` to connect your own Firebase project.
+3. Add your own Stripe **test** keys in `lib/widgets/app_constant.dart`.
+4. Run `flutter run`.
+
+> **Note:** this is a demo project. In production the Stripe PaymentIntent must be created on a backend (for example a Cloud Function), and the secret key must never be shipped inside the app.
